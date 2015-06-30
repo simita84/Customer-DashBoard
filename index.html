@@ -1,0 +1,69 @@
+<apex:page standardController="CustomerSample__c" recordSetvar="customers"   sidebar="false" standardStyleSheets="false">
+<html>
+    <head>
+       <meta charset="UTF-8"/>
+       <title>All customer records</title>
+        <!-- Static Resources for CSS -->
+        <link href="{!URLFOR($Resource.bootstrap, 'bootstrap/css/bootstrap.css')}" rel="stylesheet"/>
+        <link href="{!URLFOR($Resource.bootstrap, 'bootstrap/css/bootstrap-responsive.css')}" rel="stylesheet"/>
+        
+    <style>
+        h1{
+            font-size:25px;
+            margin:15px; 
+            margin-bottom:20px;    
+        }
+         
+    </style>    
+    </head>
+    <body>
+        <h1>All customers</h1>
+            <apex:form >    
+             <apex:pageBlock mode="inlineEdit">
+                  <apex:pageBlockSection  > 
+                      <apex:commandButton value="Save all Changes" action="{!quicksave}"/>   
+                  </apex:pageBlockSection>
+                  
+                     <apex:pageBlockTable var="customer" value="{!customers}" id="list" rows="50"
+                                          width="auto"  border="4">
+                                          
+                         <apex:column headerValue="Customer">
+                            {!customer.name}          
+                         </apex:column>
+                         
+                         <apex:column headerValue="Businesses" width="auto" >
+                             <apex:pageBlockTable value="{!customer.BusinessSamples__r}" var="business" border="4" >
+                                   <apex:column >
+                                     <apex:commandLink reRender="business_details" value="{!business.name}"> 
+                                           <apex:param value="{!business.id}"   name="current_business"/>   
+                                     </apex:commandLink> 
+                                  </apex:column>
+                             </apex:pageBlockTable>
+                         </apex:column>
+                         
+                         <apex:column  headerValue="Theatre Sample" >
+                             <apex:inputField  value="{!customer.TheaterSample__c}"/>                     
+                         </apex:column>
+                         
+                         <apex:column value=" {!customer.createddate}" headerValue="Created Date" width="auto"/>
+                         <apex:column value=" {!customer.lastmodifieddate}" headerValue="Last Modified on" width="auto"/>   
+                       </apex:pageBlockTable>
+                       
+                      <apex:pageBlockSection>
+                          <apex:pageBlockSectionItem>
+                               <apex:commandButton value="Previous" Action="{!previous}"/>
+                               <apex:commandButton value="Next"     Action="{!next}"/>
+                          </apex:pageBlockSectionItem>
+                      </apex:pageBlockSection>
+              </apex:pageBlock>
+              
+              
+              <apex:outputPanel id="business_details">
+                 <apex:pageBlock mode="inlineEdit">
+                     <apex:detail subject="{!$CurrentPage.parameters.current_business}" relatedList="true"/>
+                  </apex:pageBlock>              
+              </apex:outputPanel>        
+     </apex:form>
+    </body>
+ </html>
+</apex:page>
