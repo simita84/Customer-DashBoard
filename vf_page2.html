@@ -1,0 +1,125 @@
+<apex:page tabstyle="Customer__c" controller="nestedqueryexample4">
+    <script>
+       
+          function switchMenu(obj,obj1,obj2) 
+        {
+            var el = document.getElementById(obj);                                       
+            if ( el.style.display != 'none' ) {
+            el.style.display = 'none';
+            }
+            else {
+            el.style.display = '';
+            }
+            var e2 = document.getElementById(obj1);                                       
+            if ( e2.style.display != 'none' ) {
+            e2.style.display = 'none';
+            }
+            else {
+            e2.style.display = '';
+            }
+             var e3 = document.getElementById(obj2);                                       
+            if ( e2.style.display != 'none' ) {
+            e3.style.display = 'none';
+            }
+            else {
+            e3.style.display = '';
+            }
+
+        }
+        
+      
+ </script>
+ 
+  
+    <apex:pageblock > 
+        <apex:pageblocktable value="{!customers}"  var="customer">
+            <apex:column headervalue="Customer Name">
+                    <apex:outputtext value="{!customer.Name}"/>
+            </apex:column>
+            <apex:column >
+                   <apex:facet name="header">                                        
+                       Related Businesses                                                                         
+                    </apex:facet>
+                    <apex:outputpanel id="plusimage">
+                          <apex:image url="{!$Resource.Plus_Image}" 
+                               width="20" height="20"
+                              onclick="switchMenu('{!$Component.inlinebusinesstable}','{!$Component.minusimage}','{!$Component.plusimage}')" title="Show Businesses"/> 
+                              
+                    </apex:outputpanel>
+                    <apex:outputpanel id="minusimage" style="display:none;">
+                          <apex:image url="{!$Resource.Minus_image}" 
+                              width="20" height="20"
+                              onclick="switchMenu('{!$Component.inlinebusinesstable}','{!$Component.plusimage}','{!$Component.minusimage}')" title="Collapse - Businesses"/>
+                    </apex:outputpanel>
+                     <apex:variable value="{!0}" var="numOfBusinesses"/>
+                     <apex:repeat var="count" value="{!customer.Businesses__r}">
+                        <apex:variable var="numOfBusinesses" value="{!numOfBusinesses+1}"/>
+                     </apex:repeat>
+                     <apex:outputText rendered="{!numOfBusinesses=0}">  No businesses to show </apex:outputText>
+                     <apex:outputText rendered="{!numOfBusinesses!=0}" value="{!numOfBusinesses} "> </apex:outputText>
+                     
+                     <apex:outputPanel id="inlinebusinesstable"  style="display:none;">
+                        <apex:pageblocktable value="{!customer.Businesses__r}" var="business">
+                            <apex:column headerValue="Business Name">
+                                  <apex:outputfield value="{!business.Name}"/>
+                                  
+                                     <apex:outputpanel id="prod_plusimage" style="display:'block'">
+                                       <apex:form >
+                                         <apex:commandLink action="{!setProducts}" reRender="products">
+                                            <apex:param name="business_id"
+                                                value="{!business.id}"
+                                                assignTo="{!current_business}"/>
+                                               <apex:image url="{!$Resource.Plus_Image}" 
+                                                   width="20" height="20" title="Show products"/> 
+                                         </apex:commandLink>
+                                       
+                                      
+                                         <apex:outputPanel id="products" title="Related products">
+                                               <apex:pageBlockTable value="{!products}" var="product">
+                                                   <apex:column headerValue="Product Name">
+                                                       {!product.name}
+                                                   </apex:column>
+                                                   <apex:column headerValue="Marketing Commit">
+                                                       {!product.Marketing_Commit__c}
+                                                   </apex:column>
+                                                   <apex:column headerValue="Total Visibility">
+                                                       {!product.Total_Visibility_per_product__c}
+                                                   </apex:column>
+                                                  
+                                                 
+                                               </apex:pageBlockTable>
+                                           </apex:outputPanel>
+                                          
+                                      </apex:form>    
+                                   </apex:outputpanel>
+                                   
+                                  
+                                  
+                                   
+                                 
+                                
+                             </apex:column>
+                               
+                             <apex:column headerValue="Total Products">
+                                   <apex:outputfield value="{!business.Total_Products__c}"/>
+                             </apex:column>                          
+                        </apex:pageblocktable>
+                    </apex:outputPanel>
+                     
+            </apex:column>
+            <apex:column headervalue="Customer Theater">
+                    <apex:outputtext value="{!customer.Theater__c}"/>
+            </apex:column>
+             <apex:column headervalue="Total Visibility">
+                    <apex:outputtext value="{!customer.Total_Visibility__c}"/>
+            </apex:column>
+            
+           
+        </apex:pageblocktable>
+        
+       
+                                   
+                                   
+    </apex:pageblock>
+ 
+</apex:page>
